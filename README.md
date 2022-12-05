@@ -1,6 +1,6 @@
 # tip-calculator
 
-Tip calculator app solution
+Tip calculator
 
 This project is from frontend mentor.
 
