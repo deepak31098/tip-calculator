@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import dollar from "../../images/icon-dollar.svg";
 import person from "../../images/icon-person.svg";
-//want to pass image source as prop but unable to do so image not showing when 
-// passed from Entry.js and neither import from public is working.how actually this 
-// import from these sources are working
+
 function image(img){
     if(img==="dollar"){
         return dollar;
@@ -40,8 +38,6 @@ export const Header= styled.div`
 ` 
 export const InputDiv= styled.div`
 ` 
-// in input if 100% applied then border making them out of order if not applied they dont cover the whole
-// width. Also grids are not able to set them
 export const Input= styled.input`
     background-color:hsl(189, 41%, 97%);
     background-image:url(${function(prop){
@@ -84,10 +80,7 @@ export const TipContainer= styled.div`
     text-align:center;
     grid-template-columns:repeat(3,90px);
     grid-gap:10px;
-
-${'' /* if i apply 1fr then input takes all space make all grid distort
-if 50% is applied then it is going out of order. So hard code seems to 
-to last option is there better way to takle this */}
+    
 @media (max-width:700px){
     grid-template-columns:repeat(2,1fr);
 }

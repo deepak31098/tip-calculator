@@ -3,108 +3,87 @@ import {Main,TopContainer,Error,Input,TipContainer,Header,InputDiv,MiddleContain
 
 function Entry(props){
     let intial={5: false,10:false,15:false,20:false,50:false}
+
     const [target,setState]=useState({});
     const [errorStyle,setErrorstyle]=useState(false);
     const[Bill,setBill]=useState("0.00");
+    // this will be handled in both click and onchange function
     const[Custom,setCustom]=useState("0.00");
-    const[People,setPeople]=useState("1");
-    // tried to use this useState to update style
-    // const[style,setsStyle]=useState({backgroundColor:"red"});
-    // Then used this function to change the color to change the style once the function is triggered
-    // in handle click and want to set it as an oject in the tip
-    // function styling(){
-    //     var s={backgroundColor:"red"}===style?{backgroundColor:"blue"}:{backgroundColor:"red"};
-    //     console.log(style);
-    //     setsStyle(s);
-    // }
-    function handlereset(){
-        console.log(props.resetting+" in entry.jsx");
-    }
+    const[People,setPeople]=useState("-1");
 
-    function value(){
-        console.log(Bill+" "+Custom+" "+People+" in value function");
-        props.cal(Bill,Custom,People);
-    }
     function handleClick(event){
         let str=event.target.innerText;
-        // value("",(str.slice(0,str.length-1)),"");
         setCustom(str.slice(0,str.length-1));
-        value();
         let num=Number(str.slice(0,str.length-1));
-        setState(prevValue=>{
-           return {
+        // change initial value of styles based on click
+        setState({
               ...intial,
               [num]:true
             }
-        
-        })
-        // styling(); This is function which will be called
-    }
-    useEffect(()=>{
-        value();
-        // why in console before even starting to execute the program it log three times why is that
-        // i havent performed any clicked or changed anything
-    });
+        )}
+
+        // object to style tip based on user input
+        function styling(num){
+            return ({
+             backgroundColor:target[num] ? "hsl(185, 41%, 84%)" :"#00494d",
+             color:target[num] ? "hsl(183, 100%, 15%)" :"white"
+         })}
+
+    // calculate the value when the user enter the number of person
+    useEffect(() => {
+        props.amt(((((Number)(Bill)+((Number)(Bill)*(Number)(Custom))/100))/(Number)(People)).toFixed(2))
+        props.ttl(((((Number)(Bill)*(Number)(Custom))/100)/(Number)(People)).toFixed(2))
+    },[People]);
+
+
 
     function handleChange(event){
-
-        // I am trying to receive value there in app.js but it is giving one less
-        // ex if 2 pressed nothing if 22 pressed 2 if 222 pressed 22 like that
-   
-        console.log(event.target.value+" in handleChange just begining");
-        if(event.target.name==="Bill"){
+        const target = event.target.name;
+        if(target==="Bill"){
             setBill(event.target.value);
-            
         }
-        else if(event.target.name==="Custom"){
+        else if(target==="Custom"){
             setCustom(event.target.value);
         }
-        else if(event.target.name==="person"){
+        else if(target==="person"){
             setPeople(event.target.value);
-            
         }
-        console.log(Bill+" "+Custom+" "+People+" in handleChange before call");
-
-        value();
         if(event.target.placeholder==="Custom"){
-            //i made typo here in custom and tried to access intial but it started showing not defined here why
             setState(intial);
         }
-        if(event.target.name==="person" && event.target.value==="0"){
+        if(target==="person" && event.target.value==="0"){
             setErrorstyle(true);
         }else{
             setErrorstyle(false)
         }
     }
+
     return(
         <Main>
             <TopContainer>
                 <Header><span>Bill</span></Header>
-                <InputDiv>
-                    <Input name="Bill" onChange={handleChange} img="dollar"  ></Input>
-                </InputDiv>
+                <InputDiv><Input name="Bill" onChange={handleChange} img="dollar" ></Input></InputDiv>
             </TopContainer>
+
             <MiddleContainer>
-                <Header>
-                    <span>Select Tip %</span>
-                </Header>
+                <Header><span>Select Tip %</span></Header>
                 <TipContainer >
- {/* Tried to trigger this function but it was not working */}
-                <Tip style={{backgroundColor:target[5]&&"hsl(185, 41%, 84%)",color:target[5]&&"hsl(183, 100%, 15%)"}} onClick={handleClick}/*style={style}*/ ><span>5%</span></Tip>
-                <Tip style={{backgroundColor:target[10]&&"hsl(185, 41%, 84%)",color:target[10]&&"hsl(183, 100%, 15%)"}} onClick={handleClick}><span>10%</span></Tip>
-                <Tip style={{backgroundColor:target[15]&&"hsl(185, 41%, 84%)",color:target[15]&&"hsl(183, 100%, 15%)"}} onClick={handleClick}><span>15%</span></Tip>
-                <Tip style={{backgroundColor:target[20]&&"hsl(185, 41%, 84%)",color:target[20]&&"hsl(183, 100%, 15%)"}} onClick={handleClick}><span>20%</span></Tip>
-                <Tip style={{backgroundColor:target[50]&&"hsl(185, 41%, 84%)",color:target[50]&&"hsl(183, 100%, 15%)"}} onClick={handleClick}><span>50%</span></Tip>
-                <Input name="Custom" onChange={handleChange} placeholder='Custom'></Input>
+                    <Tip style={styling(5)} onClick={handleClick} ><span>5%</span></Tip>
+                    <Tip style={styling(10)} onClick={handleClick}><span>10%</span></Tip>
+                    <Tip style={styling(15)} onClick={handleClick}><span>15%</span></Tip>
+                    <Tip style={styling(20)} onClick={handleClick}><span>20%</span></Tip>
+                    <Tip style={styling(50)} onClick={handleClick}><span>50%</span></Tip>
+                    <Input name="Custom" onChange={handleChange} placeholder='Custom' ></Input>
                 </TipContainer>
             </MiddleContainer>
+
             <BottomContainer>
                 <Header>
-                <div><span>Number of People</span></div>
-                <Error style={{display:errorStyle&& "block"}}><span>Can't be zero</span></Error>
+                    <div><span>Number of People</span></div>
+                    <Error style={{display:errorStyle && "block"}}><span>Can't be zero</span></Error>
                 </Header>
                 <InputDiv>
-                    <Input style={{borderColor:errorStyle&&"red"}} name="person" onChange={handleChange} img="person"></Input>
+                    <Input  style={{borderColor:errorStyle &&"red"}} name="person" onChange={handleChange} img="person"></Input>
                 </InputDiv>
             </BottomContainer>
         </Main>
